@@ -1,0 +1,57 @@
+<mvc:View
+	controllerName="project2.controller.MAin"
+	xmlns="sap.ui.table"
+	xmlns:u="sap.ui.unified"
+	xmlns:c="sap.ui.core"
+	xmlns:m="sap.m"
+    height="100%">
+	<m:Page
+		showHeader="false"
+		enableScrolling="false"
+		class="sapUiContentPadding">
+		<m:content>
+			<Table
+                rows="{bookservice>/Books}"
+                
+				selectionMode="MultiToggle"
+            
+				visibleRowCount="7"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+				ariaLabelledBy="title"
+                >
+				<extension>
+					<m:OverflowToolbar style="Clear">
+						<m:Title id="title" text="Book"/>
+					</m:OverflowToolbar>
+				</extension>
+
+				<columns>
+					<Column width="11rem">
+						<m:Label text="Title" />
+						<template>
+							<m:Text text="{bookservice>title}" wrapping="false" />
+						</template>
+					</Column>
+					<Column width="11rem">
+						<m:Label text="Stock" />
+						<template>
+							<m:Input value="{bookservice>stock}"/>
+						</template>
+					</Column>
+					<Column width="6rem" hAlign="End">
+						<m:Label text="Price" />
+						<template>
+							<m:Label text="{bookservice>price}" />
+						</template>
+					</Column>
+					<Column width="9rem">
+						<m:Label text="Price" />
+						<template>
+							<u:Currency value="{bookservice>price}" currency="{bookservice>currency_code}"/>
+						</template>
+					</Column>
+				</columns>
+
+			</Table>
+		</m:content>
+	</m:Page>
+</mvc:View>

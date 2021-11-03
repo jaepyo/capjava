@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="Core"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="BooksService">
+            <EntityType Name="Books">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="title" Type="Edm.String" MaxLength="111"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1111"/>
+                <Property Name="stock" Type="Edm.Int32"/>
+                <Property Name="price" Type="Edm.Decimal" Precision="9" Scale="2"/>
+                <Property Name="currency_code" Type="Edm.String" MaxLength="3"/>
+                <Property Name="author_ID" Type="Edm.Guid"/>
+                <Property Name="genre_ID" Type="Edm.Int32"/>
+                <NavigationProperty Name="currency" Type="BooksService.Currencies">
+                    <ReferentialConstraint Property="currency_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <NavigationProperty Name="author" Type="BooksService.Authors" Partner="books">
+                    <ReferentialConstraint Property="author_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="texts" Type="Collection(BooksService.Books_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="BooksService.Books_texts">
+                    <ReferentialConstraint Property="ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="genre" Type="BooksService.Categories">
+                    <ReferentialConstraint Property="genre_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Authors">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="firstname" Type="Edm.String" MaxLength="111"/>
+                <Property Name="lastname" Type="Edm.String" MaxLength="111"/>
+                <NavigationProperty Name="books" Type="Collection(BooksService.Books)" Partner="author"/>
+            </EntityType>
+            <EntityType Name="Currencies">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" Nullable="false" MaxLength="3"/>
+                <Property Name="symbol" Type="Edm.String" MaxLength="5"/>
+                <NavigationProperty Name="texts" Type="Collection(BooksService.Currencies_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="BooksService.Currencies_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Categories">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="parent_ID" Type="Edm.Int32"/>
+                <NavigationProperty Name="parent" Type="BooksService.Categories" Partner="children">
+                    <ReferentialConstraint Property="parent_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="children" Type="Collection(BooksService.Categories)" Partner="parent">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="texts" Type="Collection(BooksService.Categories_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="BooksService.Categories_texts">
+                    <ReferentialConstraint Property="ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Books_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" Nullable="false" MaxLength="14"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="title" Type="Edm.String" MaxLength="111"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1111"/>
+            </EntityType>
+            <EntityType Name="Currencies_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" Nullable="false" MaxLength="14"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" Nullable="false" MaxLength="3"/>
+            </EntityType>
+            <EntityType Name="Categories_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" Nullable="false" MaxLength="14"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Books" EntityType="BooksService.Books">
+                    <NavigationPropertyBinding Path="currency" Target="Currencies"/>
+                    <NavigationPropertyBinding Path="author" Target="Authors"/>
+                    <NavigationPropertyBinding Path="texts" Target="Books_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Books_texts"/>
+                    <NavigationPropertyBinding Path="genre" Target="Categories"/>
+                </EntitySet>
+                <EntitySet Name="Authors" EntityType="BooksService.Authors">
+                    <NavigationPropertyBinding Path="books" Target="Books"/>
+                </EntitySet>
+                <EntitySet Name="Currencies" EntityType="BooksService.Currencies">
+                    <NavigationPropertyBinding Path="texts" Target="Currencies_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Currencies_texts"/>
+                </EntitySet>
+                <EntitySet Name="Categories" EntityType="BooksService.Categories">
+                    <NavigationPropertyBinding Path="parent" Target="Categories"/>
+                    <NavigationPropertyBinding Path="children" Target="Categories"/>
+                    <NavigationPropertyBinding Path="texts" Target="Categories_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Categories_texts"/>
+                </EntitySet>
+                <EntitySet Name="Books_texts" EntityType="BooksService.Books_texts"/>
+                <EntitySet Name="Currencies_texts" EntityType="BooksService.Currencies_texts"/>
+                <EntitySet Name="Categories_texts" EntityType="BooksService.Categories_texts"/>
+            </EntityContainer>
+            <Annotations Target="BooksService.Books">
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.EntityContainer/Books">
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Books/currency">
+                <Annotation Term="Common.Label">
+                    <String>Currency</String>
+                </Annotation>
+                <Annotation Term="Core.Description">
+                    <String>A currency code as specified in ISO 4217</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Books/currency_code">
+                <Annotation Term="Common.Label">
+                    <String>Currency</String>
+                </Annotation>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label">
+                            <String>Currency</String>
+                        </PropertyValue>
+                        <PropertyValue Property="CollectionPath">
+                            <String>Currencies</String>
+                        </PropertyValue>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty">
+                                        <PropertyPath>currency_code</PropertyPath>
+                                    </PropertyValue>
+                                    <PropertyValue Property="ValueListProperty">
+                                        <String>code</String>
+                                    </PropertyValue>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty">
+                                        <String>name</String>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Core.Description">
+                    <String>A currency code as specified in ISO 4217</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Books/genre_ID">
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label">
+                            <String>Categories</String>
+                        </PropertyValue>
+                        <PropertyValue Property="CollectionPath">
+                            <String>Categories</String>
+                        </PropertyValue>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty">
+                                        <PropertyPath>genre_ID</PropertyPath>
+                                    </PropertyValue>
+                                    <PropertyValue Property="ValueListProperty">
+                                        <String>ID</String>
+                                    </PropertyValue>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty">
+                                        <String>name</String>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Authors">
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.EntityContainer/Authors">
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable">
+                            <Bool>false</Bool>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies">
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value">
+                                <Path>name</Path>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies/name">
+                <Annotation Term="Common.Label">
+                    <String>Name</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies/descr">
+                <Annotation Term="Common.Label">
+                    <String>Description</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies/code">
+                <Annotation Term="Common.Text">
+                    <Path>name</Path>
+                </Annotation>
+                <Annotation Term="Common.Label">
+                    <String>Currency Code</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies/symbol">
+                <Annotation Term="Common.Label">
+                    <String>Currency Symbol</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Categories">
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value">
+                                <Path>name</Path>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Categories/name">
+                <Annotation Term="Common.Label">
+                    <String>Name</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Categories/descr">
+                <Annotation Term="Common.Label">
+                    <String>Description</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Categories/parent_ID">
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="Label">
+                            <String>Categories</String>
+                        </PropertyValue>
+                        <PropertyValue Property="CollectionPath">
+                            <String>Categories</String>
+                        </PropertyValue>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty">
+                                        <PropertyPath>parent_ID</PropertyPath>
+                                    </PropertyValue>
+                                    <PropertyValue Property="ValueListProperty">
+                                        <String>ID</String>
+                                    </PropertyValue>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty">
+                                        <String>name</String>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies_texts/name">
+                <Annotation Term="Common.Label">
+                    <String>Name</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies_texts/descr">
+                <Annotation Term="Common.Label">
+                    <String>Description</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Currencies_texts/code">
+                <Annotation Term="Common.Text">
+                    <Path>name</Path>
+                </Annotation>
+                <Annotation Term="Common.Label">
+                    <String>Currency Code</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Categories_texts/name">
+                <Annotation Term="Common.Label">
+                    <String>Name</String>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="BooksService.Categories_texts/descr">
+                <Annotation Term="Common.Label">
+                    <String>Description</String>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

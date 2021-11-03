@@ -1,0 +1,11 @@
+# Generated manifest.yml based on template version 0.1.0
+# appName = bookstore
+# language=java
+# multitenancy=false
+---
+applications:
+- name: bookstore
+  path: srv/target/bookstore-exec.jar
+  random-route: true
+  services:
+  - bookstore

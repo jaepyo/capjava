@@ -1,0 +1,121 @@
+<mvc:View
+    controllerName="project1.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns:f="sap.f"
+    xmlns="sap.m"
+	>
+    <f:DynamicPage id="dynamicPageId"
+                   toggleHeaderOnTitleClick="false">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="Books!"/>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:content>
+            <Table id="bookserviceTable"
+                sticky="ColumnHeaders,HeaderToolbar"
+                inset="false"
+                growing="true"
+                items="{
+						path: 'bookservice>/Books',
+						sorter: {
+							path: 'title'
+						}
+					}" 
+                width="auto"
+                class="sapFDynamicPageAlignContent">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <content>
+                            <Label text="Select Option" />
+                            <CheckBox text="소"
+                                select="onSelect"/>
+                            <CheckBox text="재"
+                                select="onSelect"/>
+                            <CheckBox text="표"
+                                select="onSelect"/>
+                            <ToolbarSpacer/>
+                            <SearchField search="onSearch" width="17.5rem"/>
+                        </content>
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <infoToolbar>
+                    <OverflowToolbar>
+                        <Label text="THIS IS INFOTOOLBAR THIS IS INFOTOOLBAR THIS IS INFOTOOLBAR"/>
+                    </OverflowToolbar>
+                </infoToolbar>
+
+                <columns>
+                    <Column
+                        width="20%"
+                        vAlign="Middle"
+                        hAlign="Center">
+                        <Text text="Stock" />
+                    </Column>
+                    <Column
+                        width="20%"
+                        vAlign="Middle"
+                        hAlign="Center">
+                        <Text text="Title" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Tablet"
+                        demandPopin="true"
+                        width="20%"
+                        hAlign="Center">
+                        <Text text="Stock" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Desktop"
+                        demandPopin="true"
+                        width="20%"
+                        hAlign="Center">
+                        <Text text="Price" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Desktop"
+                        demandPopin="true"
+                        width="20%"
+                        hAlign="Center">
+                        <Text text="Currency_code" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Desktop"
+                        demandPopin="true"
+                        width="20%"
+                        hAlign="Center">
+                        <Text text="Genre_ID" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem vAlign="Middle"
+                                    type="Navigation"
+                                    press="onListItemPress">
+                        <cells>
+                            <ObjectIdentifier text="{bookservice>stock}" />
+                            <ObjectIdentifier text="{bookservice>title}" />
+                            <ObjectIdentifier text="{bookservice>stock}" />
+                            <ObjectIdentifier text="{bookservice>price}" /> 
+                            <ObjectIdentifier text="{bookservice>currency_code}" />
+                            <ObjectIdentifier text="{bookservice>genre_ID}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+
+            </Table>
+            </f:content>
+                <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Button type="Accept" text="Accept"/>
+                    <Button type="Reject" text="Reject"/>
+                </OverflowToolbar>
+            </f:footer>
+    </f:DynamicPage>
+</mvc:View>

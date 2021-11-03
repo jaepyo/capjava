@@ -1,0 +1,6 @@
+---
+spring:
+  config.activate.on-profile: memory
+cds:
+  detasource:
+    auto-config.enabled: false
